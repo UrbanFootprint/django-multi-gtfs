@@ -57,6 +57,7 @@ class Command(BaseCommand):
         make_option('-D', '--dir',  default=False, action='store_true', help='Import all zipfiles in a dir'),
         make_option('-R', '--rename_source',  default=False, action='store_true', help='rename the zipfile with agency name'),
         make_option('-O', '--overwrite', default=False, action='store_true', help='overwrite Agencies already in system'),
+        make_option('-V', '--verbose', default=False, action='store_true', help='enable verbose output of import process'),
     )
 
     def handle(self, *args, **options):
