@@ -31,7 +31,7 @@ from stop import Stop, post_save_stop
 from stop_time import StopTime
 from transfer import Transfer
 from trip import Trip
-
+import csv
 
 class Feed(models.Model):
     """Represents a single GTFS feed.
@@ -86,12 +86,16 @@ class Feed(models.Model):
                 for f in files:
                     if f.endswith(table_name):
                         table = z.open(f)
+                        rows = len(list(csv.reader(table)))
+                        table = z.open(f)
+                        print("importing {x} rows of {table}".format(x=rows, table=table_name))
                         klass.import_txt(table, self)
         finally:
             post_save.connect(post_save_shapepoint, sender=ShapePoint)
             post_save.connect(post_save_stop, sender=Stop)
 
         # Update geometries
+        print("updating geometries...")
         # TODO: Add test feed that includes shapes (issue #20)
         for shape in self.shape_set.all():  # pragma: no cover
             shape.update_geometry(update_parent=False)
