@@ -52,7 +52,7 @@ class Feed(models.Model):
         else:
             return u"%d" % self.id
 
-    def import_gtfs(self, gtfs_file):
+    def import_gtfs(self, gtfs_file, verbose=False):
         """Import a GTFS file as feed
 
         Keyword arguments:
@@ -88,8 +88,9 @@ class Feed(models.Model):
                         table = z.open(f)
                         rows = len(list(csv.reader(table)))
                         table = z.open(f)
-                        print("importing {x} rows of {table}".format(x=rows, table=table_name))
-                        klass.import_txt(table, self)
+                        if verbose:
+                            print("importing {x} rows of {table}".format(x=rows, table=table_name))
+                        klass.import_txt(table, self, verbose=verbose)
         finally:
             post_save.connect(post_save_shapepoint, sender=ShapePoint)
             post_save.connect(post_save_stop, sender=Stop)

@@ -244,7 +244,7 @@ class Stop(Base):
     )
 
     @classmethod
-    def import_txt(cls, txt_file, feed):
+    def import_txt(cls, txt_file, feed, verbose=False):
         '''Import from a stops.txt file
 
         Stations need to be imported before stops

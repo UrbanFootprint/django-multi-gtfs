@@ -75,6 +75,7 @@ class Command(BaseCommand):
         else:
             raw_feeds = [args[0]]
         feeds = []
+
         if options['rename_source']:
             for gtfs_feed in raw_feeds:
 
@@ -103,7 +104,7 @@ class Command(BaseCommand):
                 name = options.get('name') or import_filename + ' %s' % datetime.now()
                 print('\t' + name)
                 feed = Feed.objects.create(name=name)
-                feed.import_gtfs(gtfs_feed)
+                feed.import_gtfs(gtfs_feed, verbose=options['verbose'])
                 self.stdout.write("Successfully imported Feed %s\n" % (feed))
             except Exception, E:
                 self.stdout.write(str(E))

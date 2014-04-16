@@ -171,7 +171,7 @@ class Base(models.Model):
     _rel_to_feed = 'feed'
 
     @classmethod
-    def import_txt(cls, txt_file, feed):
+    def import_txt(cls, txt_file, feed, verbose=False):
         '''Import from the GTFS text file'''
 
         # Setup the conversion from GTFS to Django Format
@@ -251,7 +251,12 @@ class Base(models.Model):
 
         # Read and convert the source txt
         reader = DictReader(txt_file)
+        i = 0
         for row in reader:
+            i += 1
+            if verbose:
+                if i % 10000 == 0:
+                    print(i)
             fields = dict()
             m2ms = dict()
             point_coords = [None, None]
