@@ -26,14 +26,27 @@ class Command(BaseCommand):
     help = 'Imports a GTFS Feed from a zipped feed file'
     option_list = BaseCommand.option_list + (
         make_option(
-            '-n', '--name', type='string', dest='name',
-            help='Set the name of the imported feed'),)
+            '-n', '--name', type='string', dest='name', help='Set the name of the imported feed'),
+        make_option(
+            '-D', '--directory', action='store_true', dest='directory', default=False,
+            help='Pass in a directory of GTFS files and import them'),
+        make_option(
+            '-r', '--rename', action='store_true', dest='rename', default=False,
+            help='Rename the .zip files with their agency before importing them.'),
+        make_option(
+            '-R', '--rename-only', action='store_true', dest='rename_only', default=False,
+            help='Rename the .zip files, but do not import them.'),
+
+    )
 
     def handle(self, *args, **options):
+
         if len(args) == 0:
             raise CommandError('You must pass in the path to the feed.')
         if len(args) > 1:
-            raise CommandError('You can only import one feed at a time.')
+            raise CommandError('Import multiple GTFS in a directory with the -D or --directory flag')
+
+
         gtfs_feed = args[0]
         name = options.get('name') or 'Imported at %s' % datetime.now()
         feed = Feed.objects.create(name=name)
