@@ -114,3 +114,4 @@ class FeedInfo(Base):
         ('feed_end_date', 'end_date'),
         ('feed_version', 'version')
     )
+

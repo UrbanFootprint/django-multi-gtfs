@@ -16,6 +16,7 @@
 from csv import DictReader, writer
 from datetime import datetime, date
 from StringIO import StringIO
+import logging
 import re
 
 from django.contrib.gis.db import models
@@ -24,7 +25,8 @@ from django.db.models.fields.related import ManyToManyField
 
 
 re_point = re.compile(r'(?P<name>point)\[(?P<index>\d)\]')
-
+logging.basicConfig()
+logger = logging.getLogger(__name__)
 
 class BaseQuerySet(GeoQuerySet):
     def export_txt(self):
@@ -262,11 +264,20 @@ class Base(models.Model):
             point_coords = [None, None]
             if cls._rel_to_feed == 'feed':
                 fields['feed'] = feed
+            model_fields = cls._meta.get_all_field_names()
+            for f, val in fields.items():
+                if f not in model_fields:
+                    fields.pop(f)
             for column_name, value in row.items():
+
                 if not column_name in name_map:
-                    if value:
-                        raise ValueError(
-                            'Unexpected column name %s in row %s, expecting'
+                    # try to support legacy files
+                    if hasattr(cls, '_legacy_format'):
+                        logger.warn(column_name + " does not match expected fields")
+                        column_name = cls._legacy_format.get(column_name, None)
+
+                    if value and not column_name:
+                        logger.warn('Unexpected column name %s in row %s, expecting'
                             ' %s' % (column_name, row, name_map.keys()))
                 elif column_name in val_map:
                     fields[name_map[column_name]] = val_map[column_name](value)

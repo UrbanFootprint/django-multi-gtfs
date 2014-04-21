@@ -15,7 +15,8 @@
 
 from datetime import datetime
 from optparse import make_option
-
+import shutil
+from multigtfs.app_settings import VALIDATOR
 from django.core.management.base import BaseCommand, CommandError
 
 from multigtfs.models.feed import Feed
@@ -30,12 +31,7 @@ class Command(BaseCommand):
         make_option(
             '-D', '--directory', action='store_true', dest='directory', default=False,
             help='Pass in a directory of GTFS files and import them'),
-        make_option(
-            '-r', '--rename', action='store_true', dest='rename', default=False,
-            help='Rename the .zip files with their agency before importing them.'),
-        make_option(
-            '-R', '--rename-only', action='store_true', dest='rename_only', default=False,
-            help='Rename the .zip files, but do not import them.'),
+
 
     )
 
@@ -48,16 +44,24 @@ from django.utils.text import slugify
 from multigtfs.models.feed import Feed
 from zipfile import ZipFile
 import csv
+import transitfeed
+
 
 class Command(BaseCommand):
     args = '<gtfsfeed.zip>'
     help = 'Imports a GTFS Feed from a zipped feed file'
     option_list = BaseCommand.option_list + (
-        make_option('-n', '--name', type='string', dest='name',help='Set the name of the imported feed'),
+        make_option('-n', '--name', type='string', dest='name', help='Set the name of the imported feed'),
         make_option('-D', '--dir',  default=False, action='store_true', help='Import all zipfiles in a dir'),
-        make_option('-R', '--rename_source',  default=False, action='store_true', help='rename the zipfile with agency name'),
-        make_option('-O', '--overwrite', default=False, action='store_true', help='overwrite Agencies already in system'),
-        make_option('-V', '--verbose', default=False, action='store_true', help='enable verbose output of import process'),
+        make_option('-r', '--rename', action='store_true', dest='rename', default=False,
+            help='Rename the .zip files with their agency before importing them.'),
+        make_option('-R', '--rename-only', action='store_true', dest='rename_only', default=False,
+            help='Rename the .zip files, but do not import them.'),
+        make_option('-O', '--overwrite', default=False, action='store_true',
+                    help='overwrite Agencies already in system'),
+        make_option('-V', '--verbose', default=False, action='store_true',
+                    help='enable verbose output of import process'),
+
     )
 
     def handle(self, *args, **options):
@@ -77,7 +81,7 @@ class Command(BaseCommand):
             raw_feeds = [args[0]]
         feeds = []
 
-        if options['rename_source']:
+        if options['rename'] or options['rename_only']:
             for gtfs_feed in raw_feeds:
 
                 z = ZipFile(gtfs_feed)
@@ -87,7 +91,7 @@ class Command(BaseCommand):
                     os.rename(gtfs_feed, gtfs_feed + '.broken')
                     continue
 
-                agency_file = z.open('agency.txt')
+                agency_file = z.open('agency.txt', mode='r')
                 agency_file_reader = csv.DictReader(agency_file, delimiter=',')
 
                 rows = [r for r in agency_file_reader]
@@ -96,6 +100,8 @@ class Command(BaseCommand):
                 print "\t" + agency_name
                 os.rename(gtfs_feed, agency_name.replace(' ', '_').replace('-','').lower() + '.zip')
                 feeds.append(gtfs_feed)
+            if options['rename_only']:
+                exit()
         else:
             feeds = raw_feeds
 
@@ -107,7 +113,14 @@ class Command(BaseCommand):
                 feed = Feed.objects.create(name=name)
                 feed.import_gtfs(gtfs_feed, verbose=options['verbose'])
                 self.stdout.write("Successfully imported Feed %s\n" % (feed))
+                success_dir = os.path.join(os.path.dirname(gtfs_feed), 'imported')
+                if not os.path.exists(success_dir):
+                    os.mkdir(success_dir)
+                shutil.move(gtfs_feed, success_dir)
             except Exception, E:
                 self.stdout.write(str(E))
-                os.rename(gtfs_feed, os.path.basename(gtfs_feed) + '.breaks')
+
+
+                # execfile()
+                # os.rename(gtfs_feed, os.path.basename(gtfs_feed) + '.breaks')
                 print E

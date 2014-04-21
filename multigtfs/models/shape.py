@@ -191,5 +191,7 @@ class ShapePoint(Base):
 
 @receiver(post_save, sender=ShapePoint, dispatch_uid="post_save_shapepoint")
 def post_save_shapepoint(sender, instance, **kwargs):
-    '''Update related objects when the ShapePoint is updated'''
+    """
+    Update related objects when the ShapePoint is updated
+    """
     instance.shape.update_geometry()

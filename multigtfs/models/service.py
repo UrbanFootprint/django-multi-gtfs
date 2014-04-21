@@ -185,3 +185,9 @@ class Service(Base):
         ('end_date', 'end_date')
     )
     _sort_order = ('start_date', 'end_date')
+
+    # support commonly out-of-date GTFS feed data
+    # {'old csv name': 'django field name'}
+    _legacy_format = {
+        'service_name': 'service_id',
+    }

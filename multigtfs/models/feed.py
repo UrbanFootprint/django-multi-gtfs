@@ -85,11 +85,12 @@ class Feed(models.Model):
             for table_name, klass in gtfs_order:
                 for f in files:
                     if f.endswith(table_name):
-                        table = z.open(f)
-                        rows = len(list(csv.reader(table)))
-                        table = z.open(f)
+                        table = z.open(f, 'rU')
                         if verbose:
+                            rows = len(list(csv.reader(table)))
                             print("importing {x} rows of {table}".format(x=rows, table=table_name))
+
+                        table = z.open(f, 'rU')
                         klass.import_txt(table, self, verbose=verbose)
         finally:
             post_save.connect(post_save_shapepoint, sender=ShapePoint)
