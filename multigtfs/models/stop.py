@@ -266,6 +266,9 @@ class Stop(Base):
         stops_csv = StringIO.StringIO()
         stops = DictWriter(stops_csv, fieldnames)
         for row in DictReader(StringIO.StringIO(txt)):
+            # filter out additional columns that will break the importer
+            row = {gtfs_key: row.get(gtfs_key, '') for gtfs_key in fieldnames}
+
             if row.get('location_type') == '1':
                 if not has_stations:
                     writeheader(stations)
