@@ -129,6 +129,7 @@ included in the service interval.
 
 The end_date field's value should be in YYYYMMDD format.
 """
+from django.utils.datetime_safe import datetime
 
 from multigtfs.models.base import models, Base
 
@@ -161,8 +162,8 @@ class Service(Base):
     sunday = models.BooleanField(
         default=True,
         help_text="Is the route active on Sunday?")
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(datetime.today())
+    end_date = models.DateField(datetime.today())
 
     def __unicode__(self):
         return u"%d-%s" % (self.feed.id, self.service_id)

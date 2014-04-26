@@ -179,7 +179,7 @@ class Base(models.Model):
         # Setup the conversion from GTFS to Django Format
         # Conversion functions
         no_convert = lambda value: value
-        date_convert = lambda value: datetime.strptime(value, '%Y%m%d')
+        date_convert = lambda value: datetime.strptime(value, '%Y%m%d') if value != 'null' else datetime.today()
         bool_convert = lambda value: value == '1'
         char_convert = lambda value: value or ''
         null_convert = lambda value: value or None
