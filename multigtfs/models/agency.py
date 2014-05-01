@@ -101,7 +101,7 @@ class Agency(Base):
         return u"%d-%s" % (self.feed.id, self.agency_id)
 
     class Meta:
-        db_table = 'agency'
+        db_table = 'multigtfs_agency'
         app_label = 'multigtfs'
         verbose_name_plural = "agencies"
 

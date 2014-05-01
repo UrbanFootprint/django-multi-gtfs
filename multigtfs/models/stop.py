@@ -225,7 +225,7 @@ class Stop(Base):
         super(Stop, self).__init__(*args, **kwargs)
 
     class Meta:
-        db_table = 'stop'
+        db_table = 'multigtfs_stop'
         app_label = 'multigtfs'
 
     _column_map = (

@@ -117,7 +117,7 @@ class Shape(Base):
                         trip.update_geometry()
 
     class Meta:
-        db_table = 'shape'
+        db_table = 'multigtfs_shape'
         app_label = 'multigtfs'
 
     _rel_to_feed = 'feed'
@@ -175,7 +175,7 @@ class ShapePoint(Base):
         super(ShapePoint, self).__init__(*args, **kwargs)
 
     class Meta:
-        db_table = 'shape_point'
+        db_table = 'multigtfs_shapepoint'
         app_label = 'multigtfs'
 
     _column_map = (

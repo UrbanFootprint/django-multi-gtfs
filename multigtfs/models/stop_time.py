@@ -207,7 +207,7 @@ class StopTime(Base):
         return u"%s-%s-%s" % (self.trip, self.stop.stop_id, self.stop_sequence)
 
     class Meta:
-        db_table = 'stop_time'
+        db_table = 'multigtfs_stoptime'
         app_label = 'multigtfs'
 
     _column_map = (

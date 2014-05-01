@@ -179,7 +179,8 @@ class Base(models.Model):
         # Setup the conversion from GTFS to Django Format
         # Conversion functions
         no_convert = lambda value: value
-        date_convert = lambda value: datetime.strptime(value, '%Y%m%d') if value != 'null' else datetime.today()
+        date_convert = lambda value: datetime.strptime(value, '%Y%m%d') if value.strip() not in ['null', ''] \
+            else datetime.strptime('21990101', '%Y%m%d')
         bool_convert = lambda value: value == '1'
         char_convert = lambda value: value or ''
         null_convert = lambda value: value or None
@@ -187,7 +188,9 @@ class Base(models.Model):
 
         def default_convert(field):
             def get_value_or_default(value):
-                if value == '' or value is None:
+                if not value:
+                    return field.get_default()
+                if value.strip() == '':
                     return field.get_default()
                 else:
                     return value
@@ -296,4 +299,4 @@ class Base(models.Model):
                 for field_name, value in m2ms.items():
                     getattr(obj, field_name).add(value)
             else:
-                cls.objects.create(**fields)
+                cls(**fields).save()

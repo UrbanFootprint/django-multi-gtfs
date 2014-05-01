@@ -162,14 +162,14 @@ class Service(Base):
     sunday = models.BooleanField(
         default=True,
         help_text="Is the route active on Sunday?")
-    start_date = models.DateField(datetime.today())
-    end_date = models.DateField(datetime.today())
+    start_date = models.DateField(default=datetime.strptime('18991231', '%Y%m%d'))
+    end_date = models.DateField(default=datetime.strptime('21000101', '%Y%m%d'))
 
     def __unicode__(self):
         return u"%d-%s" % (self.feed.id, self.service_id)
 
     class Meta:
-        db_table = 'service'
+        db_table = 'multigtfs_service'
         app_label = 'multigtfs'
 
     # For Base import/export

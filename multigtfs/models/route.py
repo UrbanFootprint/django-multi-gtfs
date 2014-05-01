@@ -111,6 +111,7 @@ The color difference between route_color and route_text_color should provide
 sufficient contrast when viewed on a black and white screen.
 """
 from django.contrib.gis.geos import MultiLineString
+import itertools
 
 from multigtfs.models.base import models, Base
 
@@ -173,8 +174,12 @@ class Route(Base):
     def __unicode__(self):
         return u"%d-%s" % (self.feed.id, self.route_id)
 
+    def stop_set(self):
+        stoptimes = itertools.chain(*[trip.stoptime_set.all().distinct('stop') for trip in self.trip_set.all()])
+        return set([stoptime.stop for stoptime in stoptimes])
+
     class Meta:
-        db_table = 'route'
+        db_table = 'multigtfs_route'
         app_label = 'multigtfs'
 
     _column_map = (

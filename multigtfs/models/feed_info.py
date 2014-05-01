@@ -102,7 +102,7 @@ class FeedInfo(Base):
         return u'%s-%s' % (self.feed.id, self.publisher_name)
 
     class Meta:
-        db_table = 'feed_info'
+        db_table = 'multigtfs_feedinfo'
         app_label = 'multigtfs'
         verbose_name_plural = "feed info"
 

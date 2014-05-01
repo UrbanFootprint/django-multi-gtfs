@@ -43,7 +43,7 @@ class Feed(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'feed'
+        db_table = 'multigtfs_feed'
         app_label = 'multigtfs'
 
     def __unicode__(self):

@@ -28,5 +28,5 @@ class Zone(Base):
         help_text="Unique identifier for a zone.")
 
     class Meta:
-        db_table = 'zone'
+        db_table = 'multigtfs_zone'
         app_label = 'multigtfs'

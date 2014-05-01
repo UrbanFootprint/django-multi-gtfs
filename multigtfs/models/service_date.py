@@ -86,7 +86,7 @@ class ServiceDate(Base):
                 'Added' if self.exception_type == 1 else 'Removed'))
 
     class Meta:
-        db_table = 'service_date'
+        db_table = 'multigtfs_servicedate'
         app_label = 'multigtfs'
 
     # For Base import/export
