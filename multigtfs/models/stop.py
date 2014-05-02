@@ -245,16 +245,16 @@ class Stop(Base):
 
     @classmethod
     def import_txt(cls, txt_file, feed, verbose=False):
-        '''Import from a stops.txt file
-
+        """
+        Import from a stops.txt file
         Stations need to be imported before stops
-        '''
+        """
         def writeheader(writer):
-            '''
+            """
             Write the header row for a DictWriter CSV file
 
             This is a member function of DictWriter in Python 2.7
-            '''
+            """
             writer.writerow(dict((fn, fn) for fn in writer.fieldnames))
 
         txt = txt_file.read()
